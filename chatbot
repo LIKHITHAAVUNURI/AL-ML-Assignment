@@ -1,0 +1,5 @@
+Running the Chatbot (CLI)
+
+In a new terminal session (with the server still running):
+
+python app/chatbot/cli_chat.py
