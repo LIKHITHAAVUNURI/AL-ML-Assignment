@@ -1,0 +1,2 @@
+Running the API Server
+uvicorn app.api.main:app --reload
