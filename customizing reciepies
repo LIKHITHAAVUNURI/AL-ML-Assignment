@@ -1,0 +1,59 @@
+Customizing Recipes
+
+Edit app/model/recipe_data.json to include new ingredient combinations and recipes.
+
+
+---
+
+### 3. `app/model/recipe_data.json`
+
+```json
+[
+  {
+    "ingredients": ["egg", "onion"],
+    "recipe": "Egg Onion Omelette: Beat eggs, mix with chopped onions, and fry on a pan."
+  },
+  {
+    "ingredients": ["potato", "onion"],
+    "recipe": "Potato Fry: Slice potatoes and onions, sauté with spices until golden."
+  },
+  {
+    "ingredients": ["chicken", "garlic"],
+    "recipe": "Garlic Chicken: Marinate chicken with garlic paste, grill or fry."
+  },
+  {
+    "ingredients": ["rice", "tomato"],
+    "recipe": "Tomato Rice: Cook rice, sauté tomatoes with spices, and mix."
+  },
+  {
+    "ingredients": ["paneer", "capsicum"],
+    "recipe": "Paneer Capsicum Stir Fry: Cook paneer and capsicum with Indian spices."
+  }
+]
+
+4. app/model/model_loader.py
+import json
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Load recipes data
+with open("app/model/recipe_data.json") as f:
+    recipes = json.load(f)
+
+def find_best_recipe(ingredients: list):
+    # Combine ingredients into a single input string
+    input_str = " ".join(ingredients).lower()
+    corpus = [" ".join(r["ingredients"]).lower() for r in recipes]
+    corpus.append(input_str)
+
+    vectorizer = CountVectorizer().fit_transform(corpus)
+    vectors = vectorizer.toarray()
+
+    similarities = cosine_similarity([vectors[-1]], vectors[:-1])[0]
+    best_idx = similarities.argmax()
+    score = similarities[best_idx]
+
+    return {
+        "recipe": recipes[best_idx]["recipe"],
+        "score": round(float(score), 2)
+    }
