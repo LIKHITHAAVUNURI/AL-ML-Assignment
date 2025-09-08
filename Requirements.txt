@@ -1,0 +1,9 @@
+requirements.txt
+fastapi
+uvicorn
+pydantic
+transformers
+torch
+scikit-learn
+python-multipart
+requests
